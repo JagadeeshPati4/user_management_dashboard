@@ -173,6 +173,4 @@ User data is fetched from [JSONPlaceholder](https://jsonplaceholder.typicode.com
 
 ---
 
-## License
-This project is licensed under the [MIT License](LICENSE).
 
