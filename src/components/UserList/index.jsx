@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {Link} from 'react-router-dom'
 import {
   Table,
   TableBody,
@@ -78,15 +79,16 @@ const UserList = ({ showNotification }) => {
           <Typography variant="body2">{user.email}</Typography>
           <Typography variant="body2" color="textSecondary">{user.company.name}</Typography>
           <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-            <Button 
+            <Link to={`/edit/${user.id}`}> <Button 
               variant="contained" 
               color="primary" 
-              href={`/edit/${user.id}`}
+           
               fullWidth
               size="small"
             >
               Edit
-            </Button>
+            </Button></Link>
+           
             <Button 
               variant="contained" 
               color="secondary" 

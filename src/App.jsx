@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Typography, CircularProgress } from '@mui/material';
 import Notification from './components/Notification';
-import { UserProvider } from './context/UserContext';
 
 const UserList = lazy(() => import('./components/UserList'));
 const UserForm = lazy(() => import('./components/UserForm'));
@@ -42,7 +41,6 @@ const App = () => {
   };
 
   return (
-    <UserProvider>
       <ThemeProvider theme={theme}>
         <Typography variant="h4" sx={{ marginBottom: 2, textAlign: 'center' }}>
           User Management Dashboard
@@ -66,7 +64,6 @@ const App = () => {
           />
         </Router>
       </ThemeProvider>
-    </UserProvider>
   );
 };
 
