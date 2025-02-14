@@ -143,7 +143,7 @@ const UserForm = ({ showNotification,selectedUseeEditId,handleEditCancel }) => {
   return (
     <Box 
       sx={{ 
-        width: '100%', 
+        // width: '100%', 
         overflowX: 'hidden',
         px: { xs: 2, sm: 3, md: 4 },
         py: { xs: 2, sm: 3, md: 4 }
