@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
   
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const [getDefualt,setGetDefualt]=useState(false);
   // Fetch only if no users in storage
   useEffect(() => {
     if (users.length === 0) {
@@ -33,12 +33,13 @@ export const UserProvider = ({ children }) => {
 
       fetchUsers();
     }
-  }, []); // Empty dependency array
+  }, [getDefualt]); // Empty dependency array
 
   const contextValue = useMemo(() => ({
     users,
     error,
     isLoading,
+    setGetDefualt,
     addUser: (newUser) => {
       const updatedUsers = (prevUsers) => {
         const newUsers = [

@@ -22,28 +22,36 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useUserContext } from '../../context/UserContext';
+import UserForm from '../UserForm';
 
 const UserList = ({ showNotification }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   
-  const { users, error, deleteUser } = useUserContext();
+  const { users, error, deleteUser,setGetDefualt } = useUserContext();
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogEdit, setOpenDialogEdit] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUseeEditId, setSelectedUserEditId] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleDeleteClick = (id) => {
-    setSelectedUserId(id);
+
+    setSelectedUserEditId(id);
     setOpenDialog(true);
   };
-
+  const handleEditClick=(id)=>{
+    console.log('id selected',id);
+    setSelectedUserId(id);
+    setOpenDialogEdit(true);
+  }
   const handleDelete = () => {
-    if (selectedUserId) {
-      axios.delete(`https://jsonplaceholder.typicode.com/users/${selectedUserId}`)
+    if (selectedUseeEditId) {
+      axios.delete(`https://jsonplaceholder.typicode.com/users/${selectedUseeEditId}`)
         .then(() => {
-          deleteUser(selectedUserId);
+          deleteUser(selectedUseeEditId);
           showNotification('User deleted successfully', 'success');
           setOpenDialog(false);
         })
@@ -57,6 +65,9 @@ const UserList = ({ showNotification }) => {
   const handleCancel = () => {
     setOpenDialog(false);
   };
+  const handleEditCancel = () => {
+    setOpenDialogEdit(false);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -68,7 +79,7 @@ const UserList = ({ showNotification }) => {
   };
 
   const paginatedUsers = users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
+  console.log("selectedUserId",selectedUserId)
   // Mobile card view component
   const MobileUserCard = ({ user }) => (
     <Card sx={{ mb: 1 }}>
@@ -103,7 +114,23 @@ const UserList = ({ showNotification }) => {
       </CardContent>
     </Card>
   );
-
+  if (users.length === 0) {
+    return (
+      <Box sx={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        height: '50vh',
+        width: '100%',
+        gap: 2
+      }}>
+        <Typography variant="h3">No users found</Typography>
+        <Button onClick={()=>{setGetDefualt(true)}}  variant="contained"  color="secondary"  size={isTablet ? 'small' : 'medium'}
+        >Get defulat data</Button>
+      </Box>
+    );
+  }
   return (
     <Box sx={{ 
       width: '100%',
@@ -194,7 +221,7 @@ const UserList = ({ showNotification }) => {
                         <Button 
                           variant="contained" 
                           color="primary" 
-                          href={`/edit/${user.id}`}
+                          onClick={() => handleEditClick(user.id)}
                           size={isTablet ? 'small' : 'medium'}
                         >
                           Edit
@@ -266,6 +293,13 @@ const UserList = ({ showNotification }) => {
           <Button onClick={handleCancel} color="primary">Cancel</Button>
           <Button onClick={handleDelete} color="secondary">Delete</Button>
         </DialogActions>
+      </Dialog>
+      <Dialog 
+        open={openDialogEdit} 
+        onClose={handleEditCancel}
+        maxWidth='x-lg'
+      >
+       <UserForm showNotification={showNotification}  selectedUseeEditId={selectedUserId} handleEditCancel={handleEditCancel} />
       </Dialog>
     </Box>
   );

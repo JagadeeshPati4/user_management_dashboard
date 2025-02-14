@@ -14,7 +14,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
 
-const UserForm = ({ showNotification }) => {
+const UserForm = ({ showNotification,selectedUseeEditId,handleEditCancel }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
@@ -32,15 +32,20 @@ const UserForm = ({ showNotification }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const { id } = useParams();
-
+  let { id } = useParams();
+  if(selectedUseeEditId){
+    id=selectedUseeEditId;
+  }
+  console.log(id);
+  console.log('selectedUseeEditId',selectedUseeEditId);
   useEffect(() => {
     if (id) {
       setLoading(true);
       axios.get(`https://jsonplaceholder.typicode.com/users/${id}`)
         .then(response => {
-          setFormData(response.data);
+          
           const updatedUser = users.filter((user) => user.id === parseInt(id));
+          setFormData(updatedUser[0]);
           setLoading(false);
         })
         .catch(() => {
@@ -107,6 +112,9 @@ const UserForm = ({ showNotification }) => {
           addUser(formData);
         }
         showNotification(id ? 'User updated successfully' : 'User added successfully', 'success');
+        if(selectedUseeEditId){
+          handleEditCancel();
+        }
         navigate('/users');
       })
       .catch(() => {
@@ -115,12 +123,18 @@ const UserForm = ({ showNotification }) => {
         setIsSubmitting(false);
       });
   };
+  const handleCancel = () => {
+    if(selectedUseeEditId){
+      handleEditCancel();
+    }
+    navigate('/users');
 
+  }
   const hasErrors = Object.keys(validateForm()).length > 0;
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh', width: '50vw' }}>
         <CircularProgress />
       </Box>
     );
@@ -142,7 +156,6 @@ const UserForm = ({ showNotification }) => {
           borderRadius: { xs: 2, sm: 3, md: 4 },
           boxShadow: 1,
           width: '100%',
-          maxWidth: '100%',
           mx: 'auto',
           boxSizing: 'border-box'
         }}
@@ -268,7 +281,6 @@ const UserForm = ({ showNotification }) => {
             variant="contained" 
             color="primary" 
             onClick={handleSave} 
-            disabled={hasErrors}
             fullWidth={isMobile}
             size={isMobile ? 'large' : 'medium'}
           >
@@ -277,7 +289,7 @@ const UserForm = ({ showNotification }) => {
           <Button 
             variant="contained" 
             color="secondary" 
-            onClick={() => navigate('/users')}
+            onClick={handleCancel}
             fullWidth={isMobile}
             size={isMobile ? 'large' : 'medium'}
           >
