@@ -164,14 +164,14 @@ const UserList = ({ showNotification }) => {
           >
             User List
           </Typography>
+          <Link to="/create">
           <Button 
             variant="contained" 
             color="primary" 
-            href="/create"
             sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Add User
-          </Button>
+          </Button></Link>
         </Box>
 
         {error && (
